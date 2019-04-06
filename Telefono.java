@@ -2,8 +2,9 @@
 package flujos;
 
 
-import static flujos.Principal.nTelefono;
-import static flujos.Principal.nombre;
+import static flujos.Ejecucion.getNombre;
+import static flujos.Ejecucion.nTelefono;
+
 import java.io.*;
 
 
@@ -12,33 +13,23 @@ import java.io.*;
  *
  * @author Yeray
  */
-public class Telefono {
+public class Telefono implements InterfazTelefono {
     
    
     
     //metodo que crea y escribe en el directorio creado
 
-    public File escribirDirectorio(){
+    /* (non-Javadoc)
+	 * @see flujos.InterfazTelefono#escribirDirectorio()
+	 */
+    @Override
+	public File escribirDirectorio(){
        // instanciacion del objeto de la clase File para crear un nuevo fichero
        File directorio = new File("directorio.txt"); 
         
         try{
            //Se crear el archivo si no esta creado
-            if(!directorio.exists()){
-                directorio.createNewFile();
-                System.out.println("Archivo creado");
-               //se abre el flujo de escritura en el archivo creado
-                BufferedWriter bw = new BufferedWriter(new FileWriter(directorio));
-               //bucle para introducir los datos que se reciben desde el main
-                for (int i = 0; i< nombre.length; i++){
-                    bw.write("* " +nombre[i]+ "  " + nTelefono[i] );  
-                }
-
-               //Se cierra el flujo
-            bw.close();
-            } else{
-                 System.out.println("El archivo ya existe");
-            }
+            crearArchivo(directorio);
       //Excepciones de objeto file no encontrado y de entrada o salida 
         }catch(FileNotFoundException fnfe){
             System.out.println("Error" +fnfe);
@@ -47,11 +38,33 @@ public class Telefono {
         }
 
           return directorio; 
-        } 
+        }
+
+	private void crearArchivo(File directorio) throws IOException {
+		if(!directorio.exists()){
+		    directorio.createNewFile();
+		    System.out.println("Archivo creado");
+		   //se abre el flujo de escritura en el archivo creado
+		    BufferedWriter bw = new BufferedWriter(new FileWriter(directorio));
+		   //bucle para introducir los datos que se reciben desde el main
+		    for (int i = 0; i< getNombre().length; i++){
+		        bw.write("* " +getNombre()[i]+ "  " + nTelefono[i] );  
+		    }
+
+		   //Se cierra el flujo
+		bw.close();
+		} else{
+		     System.out.println("El archivo ya existe");
+		}
+	} 
     
     //metodo que lee el contenido de un fichero ya creado
 
-    public String leerDirectorio() throws FileNotFoundException, IOException{
+    /* (non-Javadoc)
+	 * @see flujos.InterfazTelefono#leerDirectorio()
+	 */
+    @Override
+	public String leerDirectorio() throws FileNotFoundException, IOException{
         //se abre el flujo de lectura del archivo 
         BufferedReader br = new BufferedReader(new FileReader("directorio.txt"));
         String leer;// variable que guarda el contenido leido en el fichero
@@ -60,10 +73,10 @@ public class Telefono {
           el formato de salida con system.out 
         */
         while((leer = br.readLine()) != null){
-                for (int i = 0; i<nombre.length; i++){
-                    System.out.println("Nombre: " +nombre[i]+ " Teléfono: " + nTelefono[i] );
+                for (int i = 0; i<getNombre().length; i++){
+                    System.out.println("Nombre: " +getNombre()[i]+ " Teléfono: " + nTelefono[i] );
                   }
-             System.out.println("Hay un total de " + nombre.length + " de personas en el directorio");  
+             System.out.println("Hay un total de " + getNombre().length + " de personas en el directorio");  
             }
        
          
@@ -74,7 +87,11 @@ public class Telefono {
    
     }
     
-    public void accesoAleatorio() throws FileNotFoundException, IOException{
+    /* (non-Javadoc)
+	 * @see flujos.InterfazTelefono#accesoAleatorio()
+	 */
+    @Override
+	public void accesoAleatorio() throws FileNotFoundException, IOException{
         
         RandomAccessFile raf = new RandomAccessFile("directorio.txt", "rw");
         //System.out.println(raf.length());
